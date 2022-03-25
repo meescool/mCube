@@ -8,13 +8,15 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-uniform float moveX;
-uniform float moveY;
+uniform float scaleX;
+uniform float scaleY;
+uniform float scaleZ;
+
 uniform float myColor;
 
 void main()
 {
-	gl_Position = projection * view * model * vec4(aPos.x + moveX, aPos.y + moveY, aPos.z + moveX, 1.0f);
+	gl_Position = projection * view * model * vec4(aPos.x + scaleX, aPos.y + scaleY, aPos.z + scaleZ, 1.0f);
 
-   color = aColor + (myColor*0);
+   color = aColor + myColor;
 }

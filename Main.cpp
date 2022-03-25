@@ -28,15 +28,15 @@ void processInput(GLFWwindow* window, GLuint* size, int* myKeys);
 // Will start with very low opacity and then move up during the animation
 GLfloat vertices[] =
 { //			coordinates	   /				colors				//
-	-0.5f,	 0.5f,		-0.5f,	1.0f,	0.0f,	0.0f,	// lower left corner
-	 0.5f,	 0.5f,		-0.5f,	1.0f,	0.0f,	0.0f,	// lower right corner
-	-0.5f,	-0.5f,		-0.5f,	1.0f,	0.5f,	1.0f,	// upper corner
-	 0.5f,  -0.5f,		-0.5f,	1.0f,	0.5f,	1.0f,	// inner left
+	-0.5f,	 0.5f,		-0.5f,	0.0f,	0.5f,	0.5f,	// lower left corner
+	 0.5f,	 0.5f,		-0.5f,	0.0f,	0.5f,	0.5f,	// lower right corner
+	-0.5f,	-0.5f,		-0.5f,	0.0f,	0.5f,	0.2f,	// upper corner
+	 0.5f,  -0.5f,		-0.5f,	0.0f,	0.5f,	0.2f,	// inner left
 
-	-0.5f,	 0.5f,		0.5f,	0.5f,	1.0f,	1.0f,	// lower left corner
-	 0.5f,	 0.5f,		0.5f,	0.5f,	1.0f,	1.0f,	// lower right corner
-	-0.5f,	-0.5f,		0.5f,	0.5f,	1.0f,	1.0f,	// upper corner
-	 0.5f,  -0.5f,		0.5f,	0.5f,	1.0f,	1.0f,	// inner left
+	-0.5f,	 0.5f,		0.5f,	0.2f,	0.5f,	0.2f,	// lower left corner
+	 0.5f,	 0.5f,		0.5f,	0.2f,	0.5f,	0.2f,	// lower right corner
+	-0.5f,	-0.5f,		0.5f,	0.5f,	0.5f,	0.5f,	// upper corner
+	 0.5f,  -0.5f,		0.5f,	0.5f,	0.5f,	0.5f,	// inner left
 };
 
 // indicated with vertices to use to create the square
@@ -93,10 +93,10 @@ int main()
 	model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 	
 	// setting up the camera
-	glm::vec3 camPos = glm::vec3(5.0f, 5.0f, -5.0f); // position of the camera
-	glm::vec3 camTarget = glm::vec3(0.0f, 0.0f, 0.0f); // the target, in this case the origin
+	glm::vec3 camPos = glm::vec3(10.0f, 10.0f, 7.0f); // position of the camera
+	glm::vec3 camTarget = glm::vec3(0.5f, 0.0f, -0.5f); // the target, in this case the origin
 	glm::vec3 camDirection = glm::normalize(camPos - camTarget); // getting the direction of the camera
-	glm::vec3 up = glm::vec3(0.0f, 30.0f, 0.0f); 
+	glm::vec3 up = glm::vec3(0.0f, 10.0f, 0.0f); 
 	glm::vec3 camRight = glm::normalize(glm::cross(up, camDirection));
 	glm::vec3 camUp = glm::cross(camDirection, camRight);
 
@@ -136,19 +136,44 @@ int main()
 
 	// set positions for cubes 
 	glm::vec3 cubePos[] = {
-			glm::vec3(-1.0f, -2.0f, -3.0f),
-			glm::vec3(-1.0f, -1.0f, -3.0f),
-			glm::vec3(-1.0f,  0.0f, -3.0f),
-			glm::vec3(-1.0f,  1.0f, -3.0f),
-			glm::vec3(-1.0f,  2.0f, -3.0f),
-			glm::vec3(-1.0f,  3.0f, -3.0f),
+			glm::vec3(0.5f, 0.5f, 2.0f),
+			glm::vec3(0.5f, 1.5f, 2.0f),
+			glm::vec3(0.5f,  2.5f, 2.0f),
+
+			glm::vec3(0.5f,  3.5f, 1.0f),
+			glm::vec3(1.5f,  3.5f, 1.0f),
+			glm::vec3(2.5f,  3.5f, 1.0f),
+
+			glm::vec3(2.5f, 2.5f, 2.0f),
+			glm::vec3(2.5f, 1.5f, 2.0f),
+
+		    glm::vec3(3.5f, 1.5f, 1.0f),
+			glm::vec3(3.5f, 2.5f, 1.0f),
+
+
+			glm::vec3(2.5f,  3.5f, 1.0f),
+
+			glm::vec3(2.5f, 3.5f, 0.0f),
+			glm::vec3(2.5f, 3.5f, -1.0f),
+
+			glm::vec3(3.5f, 2.5f, -1.0f),
+			glm::vec3(3.5f, 1.5f, -1.0f),
+			glm::vec3(3.5f, 0.5f, -1.0f),
+	};
+
+	GLchar dimension[16] = {
+		'z','z','z','y','y','y','z','z','x','x','y','y','y','x','x','x'
+	};
+	GLuint turns[15] = {
+		0,0,1,2,2,3,4,5,6,7,8,8,9,10,10
 	};
 
 
 
 	// uniforms for creating new squares
-	GLuint mxID = glGetUniformLocation(shaderProgram.ID, "moveX");
-	GLuint myID = glGetUniformLocation(shaderProgram.ID, "moveY");
+	GLuint mxID = glGetUniformLocation(shaderProgram.ID, "scaleX");
+	GLuint myID = glGetUniformLocation(shaderProgram.ID, "scaleY");
+	GLuint mzID = glGetUniformLocation(shaderProgram.ID, "scaleZ");
 
 	// uniform for changing color
 	GLuint cID = glGetUniformLocation(shaderProgram.ID, "myColor");
@@ -163,12 +188,16 @@ int main()
 	GLuint projLoc = glGetUniformLocation(shaderProgram.ID, "projection");
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
+	// color variables
+	glm::vec3 yellow = glm::vec3(1.0f, 1.0f, 0.0f);
 	// temp variables for uniforms
 	float x = 0; // width
-	float y = 0; // height
+	float y = 0; // width
+	float z = 0; // depth
 	float c = 0; // color
 	float time = 0;
 	GLuint counter = 0;
+	GLuint numFaces = 15;
 	float angle = 0.0f;
 	GLboolean rewind = false;
 	// sizes of the squares
@@ -189,23 +218,24 @@ int main()
 
 	while (!glfwWindowShouldClose(window))
 	{
-		if (time >= 200.0f)
+		if (time >=20.0f)
 		{
 			time = 0.1f;
 			if (rewind == true) {
-				counter--;
+				counter = 15;
+				/*counter--;
 				if (counter == 0) {
 					rewind = false;
-				}
+				}*/
 			}
 			else {
 				counter++;
 
 			}
-			std::cout << "counter " << counter << std::endl;
+
 		}
 
-		if (counter > 4) {
+		if (counter > 14) {
 			rewind = true;
 		}
 
@@ -218,7 +248,7 @@ int main()
 		int col = size[1];
 
 		// clear the color buffer
-		glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -232,78 +262,156 @@ int main()
 		// bind the vao so opengl knows to use it
 		VAO1.Bind();
 
-		// reset x and y to 0
+		// reset x, y and z to 0
 		x = 0.0f;
 		y = 0.0f;
+		z = 0.0f;
 
 		// update the color
-		glUniform1f(cID, sin(c));
+		glUniform1f(cID, time * 0.01f);
 		//c += 0.001f;
+		if (counter == 15) {
+			glUniform1f(cID, -glfwGetTime() + 7.0f);
+		}
 
 		// set the width and height for the squares
 		// in case the sizes are new
 		float w = 3 / static_cast<float>(col);
 		float h = 3 / static_cast<float>(row);
 
+		glUniform1f(mxID, x);
+		glUniform1f(mxID, y);
+		glUniform1f(mzID, z);
+
+		// initial normalized cube
+		glm::mat4 cube = glm::mat4(1.0f);
+
 		// setting up the original cube
-		glm::mat4 largeCube = glm::mat4(1.0f);
-		glm::vec3 tempCube = glm::vec3(3.0f);
-		largeCube = glm::scale(largeCube, tempCube);
-		//largeCube = glm::rotate(largeCube, (float)glfwGetTime() * glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-
+		glm::mat4 largeCube = glm::translate(cube, glm::vec3(1.5f, 1.5f, 0.0f));
+		largeCube = glm::scale(largeCube, glm::vec3(3.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(largeCube));
 
 
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-		glUniform1f(mxID, x);
-		glUniform1f(myID, y);
 
-		/*for (GLuint i = 0; i < 6; i++)
-		{
-			x = i;
-			glm::mat4 newmodel = glm::mat4(1.0f);
-			glm::vec3 tempCube = cubePos[i] + glm::vec3(cos((c / 2) * 1.4f));
-			newmodel = glm::translate(newmodel, tempCube);
-			if (i == counter) {
-				angle = 0.04f * time;
-				newmodel = glm::translate(newmodel, glm::vec3(sin(time * 0.1f) + 2.0f, 0.0f, 0.0f));
-			}
-			if (((i == counter - 1) && i >= 0) || ((i == counter + 1) && i <= 5)) {
-				angle = 0.035f * time;
-				newmodel = glm::translate(newmodel, glm::vec3(sin(time * 0.1f) + 1.0f, 0.0f, 0.0f));
+		//setting up face
+		glUniform1f(cID, 0);
+		if (counter == 15) {
+			glUniform1f(cID, glfwGetTime() - 5.0f);
+		}
+		glm::vec3 axis = glm::vec3(0.0f, 0.0f, 0.0f);
 
-			}
-			if (((i == counter - 2) && i >= 0) || ((i == counter + 2) && i <= 5)) {
-				angle = 0.03f * time;
-				newmodel = glm::translate(newmodel, glm::vec3(sin(time * 0.1f), 0.0f, 0.0f));
-			}
+		for (GLuint i = 0; i <= counter; i++) {
+			GLfloat tempZ = 0.0f;
 
-			if (((i == counter - 3) && i >= 0) || ((i == counter + 3) && i <= 5)) {
-				angle = 0.025f * time;
+			if (dimension[i] == 'z') {
+				glUniform1f(mzID, -1.0f);
+
+				axis = glm::normalize(glm::vec3(1.0f, 0.0f, 0.0f));
+			}
+			else if (dimension[i] == 'x') {
+				glUniform1f(mxID, -1.0f);
+				axis = glm::vec3(0.0, 0.0, 1.0);
+			}
+			else {
+				glUniform1f(myID, -1.0f);
+				axis = glm::vec3(0.0, 0.0, 1.0);
 			}
 
-			if (((i == counter - 4) && i >= 0) || ((i == counter + 4) && i <= 5)) {
-				angle = 0.02f * time;
-			}
+			glm::mat4 face = glm::translate(cube, cubePos[i]);
 
-			if (((i == counter - 5) && i >= 0) || ((i == counter + 5) && i <= 5)) {
-				angle = 0.015f * time;
-			}
+			face = glm::scale(face, glm::vec3(0.8f));
+			
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(face));
 
-			newmodel = glm::rotate(newmodel, (float)glfwGetTime() * glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(newmodel));
-			glUniform1f(mxID, x);
-			glUniform1f(myID, y);
-			glUniform1f(cID, cos((c + i)));
 			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
+			glUniform1f(mxID, x);
+			glUniform1f(myID, y);
+			glUniform1f(mzID, z);
 
-		}*/
+			if (i >= 15){
+				face = glm::translate(face, glm::vec3(0.5f, -0.5f, z));
+				face = glm::rotate(face, glm::radians(-180.0f), axis);
+				face = glm::translate(face, glm::vec3(0.5f, -0.5f, z));
 
+				glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(face));
+				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
+				face = glm::translate(face, glm::vec3(3.7f, 0.0f, 3.7f));
+				glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(face));
+				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+			}
+			else if (i == counter) {
+					switch (turns[i]) {
+					case 0:
+						face = glm::translate(face, glm::vec3(x, 0.5f, -0.5f));
+						face = glm::rotate(face, -cos((time * 0.04f)) * glm::radians(-180.0f), axis);
+						face = glm::translate(face, glm::vec3(x, 0.5f, -0.5f));
+						break;
+					case 1:
+						face = glm::translate(face, glm::vec3(x, 0.5f, -0.5f));
+						face = glm::rotate(face, -cos((time * 0.05f)) * glm::radians(-180.0f), axis);
+						face = glm::translate(face, glm::vec3(x, 0.5f, -0.5f));
+						break;
+					case 2:
+						face = glm::translate(face, glm::vec3(0.5f, -0.5f, z));
+						face = glm::rotate(face, -cos((time * 0.04f)) * glm::radians(-180.0f), axis);
+						face = glm::translate(face, glm::vec3(0.5f, -0.5f, z));
+						break;
+					case 3:
+						face = glm::translate(face, glm::vec3(x, -0.5f, 0.5f));
+						face = glm::rotate(face, -cos((time * 0.05f)) * glm::radians(-180.0f), glm::vec3(-1.0, 0.0, 0.0));
+						face = glm::translate(face, glm::vec3(x, -0.5f, 0.5f));
+						break;
+					case 4:
+						face = glm::translate(face, glm::vec3(x, -0.5f, -0.5f));
+						face = glm::rotate(face, -cos((time * 0.04f)) * glm::radians(-180.0f), glm::vec3(-1.0, 0.0, 0.0));
+						face = glm::translate(face, glm::vec3(x, -0.5f, -0.5f));
+						break;
+					case 5:
+						face = glm::translate(face, glm::vec3(0.5f, y, -0.5f));
+						face = glm::rotate(face, cos((time * 0.05f)) * glm::radians(-180.0f), glm::vec3(0.0, 1.0, 0.0));
+						face = glm::translate(face, glm::vec3(0.5f, y, -0.5f));
+						break;
+					case 6:
+						face = glm::translate(face, glm::vec3(-0.5f, 0.5f, z));
+						face = glm::rotate(face, cos((time * 0.04f)) * glm::radians(-180.0f), glm::vec3(0.0, 0.0, 1.0));
+						face = glm::translate(face, glm::vec3(-0.5f, 0.5f, z));
+						break;
+					case 7:
+						face = glm::translate(face, glm::vec3(-0.5f, 0.5f, z));
+						face = glm::rotate(face, cos((time * 0.05f)) * glm::radians(-180.0f), glm::vec3(0.0, 0.0, 1.0));
+						face = glm::translate(face, glm::vec3(-0.5f, 0.5f, z));
+						break;
+					case 8:
+						face = glm::translate(face, glm::vec3(x, -0.5f, -0.5f));
+						face = glm::rotate(face, cos((time * 0.04f)) * glm::radians(-180.0f), glm::vec3(-1.0, 0.0, 0.0));
+						face = glm::translate(face, glm::vec3(x, -0.5f, -0.5f));
+						break;
+					case 9:
+						face = glm::translate(face, glm::vec3(0.5f, -0.5f, z));
+						face = glm::rotate(face, -cos((time * 0.05f)) * glm::radians(-180.0f), axis);
+						face = glm::translate(face, glm::vec3(0.5f, -0.5f, z));
+						break;
+					case 10:
+						face = glm::translate(face, glm::vec3(-0.5f, -0.5f, z));
+						face = glm::rotate(face, -cos((time * 0.04f)) * glm::radians(-180.0f), axis);
+						face = glm::translate(face, glm::vec3(-0.5f, -0.5f, z));
+						break;
+					default:
+						face = glm::translate(face, glm::vec3(0.5f, -0.5f, z));
+						face = glm::rotate(face, cos((time * 0.04f)) * glm::radians(-180.0f), glm::vec3(0.0, 1.0, 0.0));
+						face = glm::translate(face, glm::vec3(0.5f, -0.5f, z));
+						break;
+					}		
 
+				glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(face));
+				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+			}
+				
+
+		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
